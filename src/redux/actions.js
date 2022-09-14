@@ -1,6 +1,7 @@
 // import axios from "axios"
 
 export const LOGIN = "LOGIN";
+export const GET_NEWS = "GET_NEWS"
 
 
 export function login(input) {
@@ -36,4 +37,17 @@ export function resetPassword(email){
     .then((email) => {return email}      
     );
   }
+
+export const getNewsBack = ()=>{
+  return function(dispatch){
+    return fetch("http://localhost:3001/news")
+    .then((res) => res.json())
+    .then((data) => {
+      dispatch({
+        type: GET_NEWS, 
+        payload: data });
+    })
+    .catch((error) => console.error("Error:", error))
+  }
+}
 
