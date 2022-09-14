@@ -1,11 +1,15 @@
 import { useState } from "react";
-import { resetPassword } from "../../redux/actions";
+import { resetPassword, cleanerUser} from "../../redux/actions";
 import style from "./change.module.css";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 export default function Change(props) {
+const dispatch = useDispatch()
+  const user = useSelector((state) => state.user)
+  let navigate = useNavigate();
 
   const initialState = {
-    idUser:"",
     password: "",
     newPassword: ""
   }
@@ -16,9 +20,12 @@ export default function Change(props) {
     e.preventDefault();
     resetPassword({
       type: "CHANGE",
-      idUser: reset.idUser,
+      idUser: user[0].idUser,
       password: reset.password
     });
+    setReset(initialState);
+    dispatch(cleanerUser());
+    navigate("/login");
   }
 
   function handleOnChange(e) {
@@ -30,7 +37,7 @@ export default function Change(props) {
       <div className={style.contenedor}>
         <form className={style.change} onSubmit={handleOnSubmit}>
           <div className={style.message}>
-            <label>cambie pues la contraseña rapido</label>
+            <label>Cambie su contraseña</label>
           </div>
           <div className={style.password}>
             <input
