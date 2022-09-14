@@ -1,30 +1,44 @@
 import { useState } from "react";
 import { resetPassword } from "../../redux/actions";
+import style from "./reset.module.css";
 
-export default function Reset(props) {
-  const [reset, setReset] = useState("");
+export default function Reset() {
+
+  const [email, setEmail] = useState("");
 
   function handleOnSubmit(e) {
     e.preventDefault();
-    resetPassword({email: reset,
-    password: ""});
+    resetPassword({
+      type: "RESET",
+      email: email
+    });
+    setEmail("")
   }
 
   function handleOnChange(e) {
-    setReset(e.target.value);
-  }
+    setEmail(e.target.value);
 
+  }
   return (
     <div>
-      <form onSubmit={handleOnSubmit}>
-        <input
-          type="text"
-          name="name"
-          placeholder="E-mail"
+    <div className={style.contenedor}>
+      <form className={style.reset} onSubmit={handleOnSubmit}>
+      <div className={style.message}>
+            <label>Ingrese correo para restablecer contraseña</label>
+          </div>
+          <div className={style.email}>
+          <input
+          type="email"
+          name="email"
+          placeholder="E-mail..."
           onChange={handleOnChange}
         />
+        </div>
+        <div className={style.send}>
         <input type="submit" value="enviar" />
+        </div>
       </form>
+    </div>
     </div>
   );
 }
