@@ -1,8 +1,11 @@
 import jwt_decode from "jwt-decode";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux"
-import { login } from "../../redux/actions";
 import { Link } from 'react-router-dom'
+import { Button } from '@mui/material'
+import { login } from "../../redux/actions";
+import style from "./login.module.css";
+
 
 
 export default function Login(props) {
@@ -25,11 +28,11 @@ export default function Login(props) {
   }
 
   function handleOnChange(e) {
-    setInput({...input, [e.target.name]: e.target.value})
+    setInput({ ...input, [e.target.name]: e.target.value })
   }
 
   ////// LOGIN GOOOGLE
-  useEffect(() =>{
+  useEffect(() => {
     /* global google */
     google.accounts.id.initialize({
       client_id:
@@ -42,7 +45,7 @@ export default function Login(props) {
       size: "large",
     });
     // eslint-disable-next-line
-  },[])
+  }, [])
 
 
   function handleCallbackResponse(response) {
@@ -57,18 +60,35 @@ export default function Login(props) {
 
 
   return (
-    <div>
-      <form onSubmit={handleOnSubmit}>
-        <label>
-          <input type="text" placeholder="E-mail..." name="email" value={input.email} onChange={handleOnChange} />
-        </label>
-        <label>
-          <input type="text" placeholder="Password.." name="password" value={input.password} onChange={handleOnChange}/>
-        </label>
-        <input type="submit" value="send" />
-        <div id="signInDiv"></div>
-      </form>
-      <Link to='/reset'>Restablecer contraseña</Link>
+    <div >
+      <div className={style.contenedor}>
+        <form className={style.login} onSubmit={handleOnSubmit}>
+          <div className={style.message}>
+            <label>mensaje escuela</label>
+          </div>
+          <div className={style.email}>
+            <input type="email" placeholder="E-mail..." name="email" value={input.email} onChange={handleOnChange} />
+          </div>
+          <div className={style.password}>
+            <input type="password" placeholder="Password.." name="password" value={input.password} onChange={handleOnChange} />
+          </div>
+          <div className={style.send}>
+            <input type="submit" value="send" />
+          </div>
+          <div className={style.google}>
+            <div id="signInDiv"></div>
+          </div>
+          <div className={style.reset}>
+            <Button variant="contained" size="small" >
+              <Link to='/reset' variant="outlined" component="label">Restablecer contraseña</Link>
+            </Button>
+          </div>
+        </form>
+      </div>
+
     </div>
+
+
+
   );
 }
