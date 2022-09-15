@@ -20,6 +20,19 @@ export function login(input) {
   };
 }
 
+export const getNotifications = (idUser) => async dispatch => {
+  try{
+  return await fetch(`http://localhost:3001/notifications/idUser/${idUser}`)
+    .then(r => r.json())
+    .then(data => dispatch({ type: "GET_ALL_IDUSER_NOTIFICATIONS", payload: data }))
+    .catch(error=> console.log('Error de fetch API'))
+  }
+  catch(error){
+    console.log('Error de try API');
+    throw new Error({error: error.messege}) 
+  }
+}
+
 // Restablecer contraseña OK
 export async function resetPassword(password){
     return fetch("http://localhost:3001/users/password",{

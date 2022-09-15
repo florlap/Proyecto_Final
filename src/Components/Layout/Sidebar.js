@@ -12,7 +12,6 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import MailIcon from '@mui/icons-material/Mail';
-import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import { Link } from "react-router-dom";
 
@@ -33,7 +32,7 @@ export default function ResponsiveDrawer({ typeUser }) {
 
   switch (typeUser) {
     case "Administrativo": menuLinks = [{ link: "/", text: 'Usuarios', icon: <PeopleAlt /> },
-    { link: "/", text: 'Notificaciones', icon: <MailIcon /> },
+    { link: "/notifications/admin", text: 'Notificaciones', icon: <MailIcon /> },
     { link: "/", text: 'Alumnos', icon: <School /> },
     { link: "/", text: 'Pagos', icon: <Paid /> }]
       break;
