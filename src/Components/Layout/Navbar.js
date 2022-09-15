@@ -12,10 +12,16 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import LocalGroceryStore from '@mui/icons-material/LocalGroceryStore';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import { Link } from "react-router-dom";
+import { cleanerUser } from "../../redux/actions";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 
 
 export default function PrimarySearchAppBar() {
+  let dispatch = useDispatch();
+  let navigate = useNavigate();
+
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
     React.useState(null);
@@ -32,6 +38,8 @@ export default function PrimarySearchAppBar() {
   };
 
   const handleMenuClose = () => {
+    dispatch(cleanerUser());
+    navigate("/");
     setAnchorEl(null);
     handleMobileMenuClose();
   };

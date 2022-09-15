@@ -1,8 +1,14 @@
 import { useState } from "react";
 import { resetPassword } from "../../redux/actions";
 import style from "./reset.module.css";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { cleanerUser} from "../../redux/actions";
+
 
 export default function Reset() {
+  let dispatch = useDispatch();
+  let navigate = useNavigate();
 
   const [email, setEmail] = useState("");
 
@@ -12,7 +18,10 @@ export default function Reset() {
       type: "RESET",
       email: email
     });
+    dispatch(cleanerUser());
     setEmail("")
+    navigate("/login");
+
   }
 
   function handleOnChange(e) {
@@ -30,6 +39,7 @@ export default function Reset() {
           <input
           type="email"
           name="email"
+          value={email}
           placeholder="E-mail..."
           onChange={handleOnChange}
         />

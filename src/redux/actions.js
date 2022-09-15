@@ -1,8 +1,8 @@
-// import axios from "axios"
-
 export const LOGIN = "LOGIN";
+export const CLEANER_USER = "CLEANER_USER";
 
 
+// get password
 export function login(input) {
   return function (dispatch) {
     return fetch("http://localhost:3001/users/password", {
@@ -15,26 +15,9 @@ export function login(input) {
       .then((res) => res.json())
       .catch((error) => console.error("Error:", error))
       .then((login) => {
-        console.log(login);
         dispatch({ type: LOGIN, payload: login });
       });
   };
-}
-
-
-export function resetPassword(email) {
-  console.log(email);
-  return fetch("http://localhost:3001/users/passwords", {
-    method: "POST",
-    body: JSON.stringify(email),
-    headers: {
-      "Content-Type": "application/json",
-    },
-  })
-    .then((res) => res.json())
-    .catch((error) => console.error("Error:", error))
-    .then((email) => { return email }
-    );
 }
 
 export const getNotifications = (idUser) => async dispatch => {
@@ -49,3 +32,24 @@ export const getNotifications = (idUser) => async dispatch => {
     throw new Error({error: error.messege}) 
   }
 }
+
+// Restablecer contraseña OK
+export async function resetPassword(password){
+    return fetch("http://localhost:3001/users/password",{
+      method: "PUT",
+      body: JSON.stringify(password),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+    .then((res) => res.json())
+    .catch((error) => console.error("Error:", error))
+    .then((email) => console.log(email));
+  }
+
+  // Limpiar reducer user
+  export function cleanerUser(){
+    return {
+      type: CLEANER_USER
+    }
+  }
