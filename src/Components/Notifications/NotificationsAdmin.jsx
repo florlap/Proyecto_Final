@@ -8,6 +8,8 @@ import { getNotifications } from '../../redux/actions';
 import ConfirmIcon from '@mui/icons-material/ThumbUpAlt';
 import NoConfirmIcon from '@mui/icons-material/ThumbUpOffAlt';
 import Pay from '@mui/icons-material/Paid';
+import DialogContainer from '../Layout/DialogContainer'
+import NotificationForm from './NotificationForm'
 
 export default function NotificationsAdmin() {
 
@@ -22,12 +24,11 @@ export default function NotificationsAdmin() {
             console.log("Paso por useEffect");
     }, [dispatch])
 
-    console.log("Siguio desde pues de useeffect");
 
-    console.log("Notificaciones del estado",notificationsState);
 
     const [notificationSelected, setnotificationSelected] = useState({})
     const [mode, setMode] = useState("new")
+    const [title, setTitle] = useState("Crear de Notificación")
     const [open, setOpen] = useState(false);
 
     function handleClickOpen() {
@@ -38,14 +39,12 @@ export default function NotificationsAdmin() {
         setOpen(false);
     };
 
- 
-    function handledOnClickDetail(notification) {
+    function handleOnclickNewEdit(notification, mode, title) {
+        console.log("Notif tomada de tabla",notification);
         setnotificationSelected(notification)
+        setMode(mode)
+        setTitle("Editar Notificación")
         handleClickOpen()
-    }
-
-    function handleOnclickNewEdit(notification, type) {
-        setnotificationSelected(notification)
     }
     // console.log(notifications);
     let notificationsRows = []
@@ -61,7 +60,7 @@ export default function NotificationsAdmin() {
                             notification?.check===null  ? "" : notification?.check?<ConfirmIcon color='success' sx={{ width: 30, height: 30 }}/>:<NoConfirmIcon color='disabled' sx={{ width: 30, height: 30 }}/>,
                             notification?.pay ? <Pay sx={{ width: 30, height: 30 }}/>:"",
                         <div key={key}>
-                            <Button variant="outlined" onClick={() => handledOnClickDetail(notification)} >Detalle</Button>
+                            <Button variant="outlined" onClick={() => handleOnclickNewEdit(notification, "edit")} >Editar</Button>
                         </div>])
                         key++
                 })
@@ -185,7 +184,7 @@ export default function NotificationsAdmin() {
 
             </div>
             <Grid Container>
-                {/* <DialogContainer open={open}  ><NotificationDetail notification={notificationSelected} handleClose={handleClose} /></DialogContainer> */}
+                <DialogContainer open={open}  ><NotificationForm notification={notificationSelected} mode={mode} handleClose={handleClose} title={title}/></DialogContainer>
             </Grid>
         </div>
     )
