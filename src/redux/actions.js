@@ -1,6 +1,7 @@
 export const LOGIN = "LOGIN";
 export const CLEANER_USER = "CLEANER_USER";
-
+export const GET_NEWS = "GET_NEWS"
+export const GET_FAVORITES = "GET_FAVORITES"
 
 // get password
 export function login(input) {
@@ -51,5 +52,31 @@ export async function resetPassword(password){
   export function cleanerUser(){
     return {
       type: CLEANER_USER
+    }
+  }
+
+  export const getNews = ()=>{
+    return function(dispatch){
+      return fetch("http://localhost:3001/news")
+      .then((res) => res.json())
+      .then((data) => {
+        dispatch({
+          type: GET_NEWS, 
+          payload: data });
+      })
+      .catch((error) => console.error("Error:", error))
+    }
+  }
+  
+  export const getFavorites = ()=>{
+    return function(dispatch){
+      return fetch("http://localhost:3001/favnews")
+      .then((res) => res.json())
+      .then((data) => {
+        dispatch({
+          type: GET_FAVORITES, 
+          payload: data });
+      })
+      .catch((error) => console.error("Error:", error))
     }
   }

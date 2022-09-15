@@ -66,10 +66,10 @@ export default function Login(props) {
     if (user[0].initialState === true) {
       navigate("/change");
     } else if (user[0].initialState === false) {
-      navigate("/principal");
+      navigate("/favorites");
     }
   } else if (user[1] === "GOOGLE") {
-    navigate("/principal");
+    navigate("/favorites");
   }
   }, [user]);
 
