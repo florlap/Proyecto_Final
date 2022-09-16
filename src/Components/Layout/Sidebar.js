@@ -17,16 +17,18 @@ import { Link } from "react-router-dom";
 import NewspaperIcon from "@mui/icons-material/Newspaper";
 const drawerWidth = 240;
 
-export default function ResponsiveDrawer({ typeUser }) {
-  console.log("tipo recibido en sidebar:", typeUser);
+export default function ResponsiveDrawer({typeUser}) {
+
   const { window } = () => Window;
   const [mobileOpen, setMobileOpen] = React.useState(false);
+
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
 
-  typeUser = "Administrativo";
+
+// let typeUser = typeUsers ? typeUsers: "administrativo"
 
   let menuLinks = [];
 
@@ -44,13 +46,10 @@ export default function ResponsiveDrawer({ typeUser }) {
         { link: "/", text: "Pagos", icon: <Paid /> },
       ];
       break;
-    case "Tutor":
-      menuLinks = [
-        { link: "/noticias", text: "Noticias", icon: <NewspaperIcon /> },
-        { link: "/", text: "Notificaciones", icon: <MailIcon /> },
-        { link: "/", text: "Boletines", icon: <School /> },
-        { link: "/", text: "Pagos", icon: <Paid /> },
-      ];
+
+    case "Tutor": menuLinks = [{ link: "/notifications/tutor", text: 'Notificaciones', icon: <MailIcon /> },
+    { link: "/", text: 'Boletines', icon: <School /> },
+    { link: "/", text: 'Pagos', icon: <Paid /> }]
       break;
     default:
       break;
@@ -58,7 +57,10 @@ export default function ResponsiveDrawer({ typeUser }) {
 
   const drawer = (
     <div>
-      <Toolbar>{typeUser === "admin" ? "Administracion" : "Accesos"}</Toolbar>
+
+      <Toolbar>
+        {typeUser === "admin" ? "Administracion" : "Accesos"}
+      </Toolbar>
       <CssBaseline />
       <Divider />
       <List>

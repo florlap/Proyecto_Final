@@ -17,7 +17,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import FolderSpecialIcon from "@mui/icons-material/FolderSpecial";
 
-export default function PrimarySearchAppBar() {
+export default function PrimarySearchAppBar({user}) {
   let dispatch = useDispatch();
   let navigate = useNavigate();
 
@@ -36,8 +36,6 @@ export default function PrimarySearchAppBar() {
   };
 
   const handleMenuClose = () => {
-    dispatch(cleanerUser());
-    navigate("/");
     setAnchorEl(null);
     handleMobileMenuClose();
   };
@@ -46,7 +44,21 @@ export default function PrimarySearchAppBar() {
     setMobileMoreAnchorEl(event.currentTarget);
   };
 
-  const menuId = "primary-search-account-menu";
+
+  function handledCloseSession() {
+    dispatch(cleanerUser());
+    navigate("/");
+    setAnchorEl(null);
+    handleMobileMenuClose();
+  }
+
+  function handledProfile() {
+    navigate("/user/profile");
+    setAnchorEl(null);
+    handleMobileMenuClose();
+  }
+
+  const menuId = 'primary-search-account-menu';
   const renderMenu = (
     <Menu
       anchorEl={anchorEl}
@@ -63,8 +75,8 @@ export default function PrimarySearchAppBar() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>Perfil</MenuItem>
-      <MenuItem onClick={handleMenuClose}>Cerrar Sesion</MenuItem>
+      <MenuItem onClick={handledProfile}>Perfil {user?.firstNames} {user?.lastName}</MenuItem>
+      <MenuItem onClick={handledCloseSession}>Cerrar Sesion</MenuItem>
     </Menu>
   );
 
