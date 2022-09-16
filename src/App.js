@@ -8,6 +8,7 @@ import Layout from './Components/Layout/Layout'
 import NotificationsAdmin from './Components/Notifications/NotificationsAdmin'
 import Change from './Components/Login/Change'
 import Principal from './Components/Principal/Principal'
+import Profile from './Components/Users/Profile'
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
       <Route path="/change" element={<Change/>} />
       <Route path="/principal" element={<Layout><Principal/></Layout>} />
       <Route path="/notifications/admin" element={<Layout><NotificationsAdmin /></Layout>} />
+      <Route path="/user/profile" element={<Layout><Profile /></Layout>} />
 
     </Routes>
   </BrowserRouter>
