@@ -1,10 +1,9 @@
 import * as React from 'react';
 import MUIDataTable from "mui-datatables";
 import Button from '@mui/material/Button';
-import { Grid } from '@mui/material';
+import { Grid ,Box} from '@mui/material';
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { getNotifications } from '../../redux/actions';
 import ConfirmIcon from '@mui/icons-material/ThumbUpAlt';
 import NoConfirmIcon from '@mui/icons-material/ThumbUpOffAlt';
 import Pay from '@mui/icons-material/Paid';
@@ -13,23 +12,45 @@ import NotificationForm from './NotificationForm'
 
 export default function NotificationsAdmin() {
 
-    const dispatch = useDispatch()
-    
     //traigo las notificaciones que estan en el estado
-    let notificationsState = useSelector(state => state.notifications)
+    let notificationsState = useSelector(state => state.user)
 
-    //la primera vez cargo las notificaciones en el estado si esta vacio
-    useEffect(() => {
-            dispatch(getNotifications(8))
-            console.log("Paso por useEffect");
-    }, [dispatch])
-
-
-
+ 
     const [notificationSelected, setnotificationSelected] = useState({})
     const [mode, setMode] = useState("new")
     const [title, setTitle] = useState("Crear de Notificación")
     const [open, setOpen] = useState(false);
+    const [notificationsRows,setNotificationsRows] = useState([])
+
+    function dataForm(data) {
+        let dataTableNew={
+            subject: data?.subject,
+            body: data?.body,
+            active: data.active,
+            check: data?.check,
+            pay: data?.pay,
+            review: data?.review,
+            }
+            notificationsRowsFormated.push(dataTableNew)
+            console.log("Lista de notif despues de agregar",notificationsRowsFormated);
+        if(mode==="new"){
+            // let dataDbNew= {
+            //     firstNames: data.firstNames,
+            //     lastName: "apellido",
+            //     email: data.email,
+            //     phone: 123456,
+            //     password: "",
+            //     typeuserIdTypeUsers: data.idTypeUsers,
+            // }
+            // let dataFormated= {
+            //     type: "POST_ADMINISTRATIVO",
+            //     users: [dataDbNew]
+            // }
+            // userCreate(dataFormated)
+            // console.log("Este se envio desde Form:",dataFormated);
+        }
+ 
+    }
 
     function handleClickOpen() {
         setOpen(true);
@@ -43,11 +64,11 @@ export default function NotificationsAdmin() {
         console.log("Notif tomada de tabla",notification);
         setnotificationSelected(notification)
         setMode(mode)
-        setTitle("Editar Notificación")
+        setTitle(title)
         handleClickOpen()
     }
     // console.log(notifications);
-    let notificationsRows = []
+    let notificationsRowsFormated = []
     notificationsState[0]?.students?.map((student , index) => {
         var studentName =student.firstNames
         let key =1
@@ -56,26 +77,20 @@ export default function NotificationsAdmin() {
                 student?.notifications?.map((notification) =>{
                         let fecha=notification.creationDate.split('-')
                         let fechaFormated = `${fecha[2]}/${fecha[1]}/${fecha[0]}`
-                    notificationsRows.push([fechaFormated, notification.subject, notification.body, studentName, 
+                        notificationsRowsFormated.push([fechaFormated, notification.subject, notification.body, studentName, 
                             notification?.check===null  ? "" : notification?.check?<ConfirmIcon color='success' sx={{ width: 30, height: 30 }}/>:<NoConfirmIcon color='disabled' sx={{ width: 30, height: 30 }}/>,
                             notification?.pay ? <Pay sx={{ width: 30, height: 30 }}/>:"",
                         <div key={key}>
-                            <Button variant="outlined" onClick={() => handleOnclickNewEdit(notification, "edit")} >Editar</Button>
+                            <Button variant="outlined" onClick={() => handleOnclickNewEdit(notification, "edit","Editar Notificación")} >Editar</Button>
                         </div>])
                         key++
                 })
             }
     })
-
-
-    // let notificationsRow = notifications ? notifications?.map((notification, index) => {
-    //     return [notification.notificationDate, notification.subject, notification.body,  notification.check ? "Confirmada" : "Sin Confirmar",
-    //     <div key={notification.idNotification}>
-    //         <Button variant="outlined" onClick={() => handledOnClickDetail(notification)} >Detalle</Button>
-    //     </div>
-    //     ]
-    // }) : []
-
+    
+    useEffect(()=>{
+        setNotificationsRows(notificationsRowsFormated)
+    },[notificationsRowsFormated])
     
     let columns = [
         {
@@ -173,6 +188,9 @@ export default function NotificationsAdmin() {
         <div>
             <div>
                 <h2>Notificaciones</h2>
+                <Box >
+                    <Button variant="outlined" onClick={() => handleOnclickNewEdit({}, "new","Crear Notificación")}>Crear notification</Button>
+                </Box>
                 <div>
                     <MUIDataTable
                         title={"Listado de Notificaciones"}
@@ -184,7 +202,7 @@ export default function NotificationsAdmin() {
 
             </div>
             <Grid Container>
-                <DialogContainer open={open}  ><NotificationForm notification={notificationSelected} mode={mode} handleClose={handleClose} title={title}/></DialogContainer>
+                <DialogContainer open={open}  ><NotificationForm notification={notificationSelected} mode={mode} handleClose={handleClose} title={title} dataForm={dataForm}/></DialogContainer>
             </Grid>
         </div>
     )

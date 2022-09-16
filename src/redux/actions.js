@@ -6,6 +6,7 @@ export const GET_ALL_IDUSER_NOTIFICATIONS = "GET_ALL_IDUSER_NOTIFICATIONS";
 
 // get password
 export function login(input) {
+  console.log(input);
   return function (dispatch) {
     return fetch("http://localhost:3001/users/password", {
       method: "POST",

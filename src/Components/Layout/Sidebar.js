@@ -17,16 +17,17 @@ import { Link } from "react-router-dom";
 
 const drawerWidth = 240;
 
-export default function ResponsiveDrawer({ typeUser }) {
-  console.log("tipo recibido en sidebar:", typeUser);
+export default function ResponsiveDrawer({typeUser}) {
+
   const { window } = () => Window;
   const [mobileOpen, setMobileOpen] = React.useState(false);
+
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
 
-  typeUser = 'Administrativo'
+// let typeUser = typeUsers ? typeUsers: "administrativo"
 
   let menuLinks = []
 
@@ -49,7 +50,7 @@ export default function ResponsiveDrawer({ typeUser }) {
       <Toolbar>
         {typeUser === "admin" ? "Administracion" : "Accesos"}
       </Toolbar>
-      <CssBaseline/>
+      <CssBaseline />
       <Divider />
       <List>
         {
