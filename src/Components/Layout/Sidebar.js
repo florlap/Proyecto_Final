@@ -37,7 +37,7 @@ export default function ResponsiveDrawer({typeUser}) {
     { link: "/", text: 'Alumnos', icon: <School /> },
     { link: "/", text: 'Pagos', icon: <Paid /> }]
       break;
-    case "Tutor": menuLinks = [{ link: "/", text: 'Notificaciones', icon: <MailIcon /> },
+    case "Tutor": menuLinks = [{ link: "/notifications/tutor", text: 'Notificaciones', icon: <MailIcon /> },
     { link: "/", text: 'Boletines', icon: <School /> },
     { link: "/", text: 'Pagos', icon: <Paid /> }]
       break;
