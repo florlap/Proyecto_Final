@@ -66,11 +66,12 @@ export default function Login(props) {
     if (user[0].initialState === true) {
       navigate("/change");
     } else if (user[0].initialState === false) {
-      navigate("/favorites");
+      navigate("/noticias");
     }
   } else if (user[1] === "GOOGLE") {
-    navigate("/favorites");
+    navigate("/noticias");
   }
+  
   }, [user]);
 
   function handleOnChange(e) {

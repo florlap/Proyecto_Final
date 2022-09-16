@@ -85,18 +85,23 @@ export default function PrimarySearchAppBar() {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      <MenuItem>
-        <IconButton
-          size="large"
-          aria-label="show 2 new notifications"
-          color="inherit"
-        >
-          <Badge badgeContent={2} color="error">
-            <FolderSpecialIcon />
-          </Badge>
-        </IconButton>
-        <p>Favoritos</p>
-      </MenuItem>
+      <Link
+        to={"/favorites"}
+        style={{ color: "inherit", textDecoration: "inherit" }}
+      >
+        <MenuItem>
+          <IconButton
+            size="large"
+            aria-label="show 2 new notifications"
+            color="inherit"
+          >
+            <Badge badgeContent={2} color="error">
+              <FolderSpecialIcon />
+            </Badge>
+          </IconButton>
+          <p>Favoritos</p>
+        </MenuItem>
+      </Link>
       <MenuItem>
         <IconButton
           size="large"

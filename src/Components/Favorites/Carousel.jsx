@@ -15,15 +15,14 @@ const FavsCarusel=(props) => {
     useEffect(() => {
         dispatch(getFavorites())
       }, [dispatch])
-      console.log(favs);
     return (
         <div>
             <h1>Favoritos</h1>
-            <Carousel>
+            <Carousel sx={{ m: 3 }}>
                 {
                     favs.map( (favs, i) => <Item key={i} favs={favs} /> )
                 }
-            </Carousel>
+    </Carousel>
         </div>
 
     )

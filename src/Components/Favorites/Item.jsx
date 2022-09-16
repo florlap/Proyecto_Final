@@ -1,15 +1,39 @@
 import React from "react";
+import CardMedia from "@mui/material/CardMedia";
+import CardContent from "@mui/material/CardContent";
+import Typography from "@mui/material/Typography";
 
-import { Paper } from "@mui/material";
+import { Grid, Divider } from "@mui/material";
 
 const Item = (props) => {
   return (
-    <Paper>
-      <h2>{props.favs.favorites.title}</h2>
-      <p>{props.favs.favorites.body}</p>
-      <p>Creado por: {props.favs.favorites.poster.firstNames}</p>
-      <h2>Faveado por: {props.favs.user.firstNames}</h2>
-    </Paper>
+    <Grid container style={{ maxWidth: 1410, margin: "auto" }}>
+      <Grid item md={8} sm={12}  sx={{ boxShadow: 2 }}>
+        <CardMedia
+          component="img"
+          height="400"
+          image={props.favs.favorites.image}  // props.img
+          alt="Paella dish"
+        />
+      </Grid>
+      <Grid item md={4} sm={12}>
+        <CardContent>
+          <Typography variant="h5" color="text.secondary">
+          {props.favs.favorites.title}
+          </Typography>
+          <Divider variant="middle" sx={{ mt: 1 }} />
+          <Typography variant="body2" color="text.secondary" sx={{ mt: 3 }}>
+          {props.favs.favorites.body}
+          </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mt: 3 }}>
+          Creado por: {props.favs.favorites.poster.firstNames}
+          </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mt: 3 }}>
+          Faveado por: {props.favs.user.firstNames}
+          </Typography>
+        </CardContent>
+      </Grid>
+    </Grid>
   );
 };
 

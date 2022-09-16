@@ -67,7 +67,6 @@ export async function resetPassword(password){
       .catch((error) => console.error("Error:", error))
     }
   }
-  
   export const getFavorites = ()=>{
     return function(dispatch){
       return fetch("http://localhost:3001/favnews")
