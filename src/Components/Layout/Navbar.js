@@ -16,16 +16,14 @@ import { Link } from "react-router-dom";
 import { cleanerUser } from "../../redux/actions";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-
-
+import FolderSpecialIcon from "@mui/icons-material/FolderSpecial";
 
 export default function PrimarySearchAppBar({user}) {
   let dispatch = useDispatch();
   let navigate = useNavigate();
 
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
-    React.useState(null);
+  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -47,6 +45,7 @@ export default function PrimarySearchAppBar({user}) {
     setMobileMoreAnchorEl(event.currentTarget);
   };
 
+
   function handledCloseSession() {
     dispatch(cleanerUser());
     navigate("/");
@@ -65,14 +64,14 @@ export default function PrimarySearchAppBar({user}) {
     <Menu
       anchorEl={anchorEl}
       anchorOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
+        vertical: "top",
+        horizontal: "right",
       }}
       id={menuId}
       keepMounted
       transformOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
+        vertical: "top",
+        horizontal: "right",
       }}
       open={isMenuOpen}
       onClose={handleMenuClose}
@@ -82,23 +81,40 @@ export default function PrimarySearchAppBar({user}) {
     </Menu>
   );
 
-  const mobileMenuId = 'primary-search-account-menu-mobile';
+  const mobileMenuId = "primary-search-account-menu-mobile";
   const renderMobileMenu = (
     <Menu
       anchorEl={mobileMoreAnchorEl}
       anchorOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
+        vertical: "top",
+        horizontal: "right",
       }}
       id={mobileMenuId}
       keepMounted
       transformOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
+        vertical: "top",
+        horizontal: "right",
       }}
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
+      <Link
+        to={"/favorites"}
+        style={{ color: "inherit", textDecoration: "inherit" }}
+      >
+        <MenuItem>
+          <IconButton
+            size="large"
+            aria-label="show 2 new notifications"
+            color="inherit"
+          >
+            <Badge badgeContent={2} color="error">
+              <FolderSpecialIcon />
+            </Badge>
+          </IconButton>
+          <p>Favoritos</p>
+        </MenuItem>
+      </Link>
       <MenuItem>
         <IconButton
           size="large"
@@ -128,7 +144,10 @@ export default function PrimarySearchAppBar({user}) {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+      <AppBar
+        position="fixed"
+        sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
+      >
         <Toolbar>
           <IconButton
             size="large"
@@ -139,26 +158,43 @@ export default function PrimarySearchAppBar({user}) {
           >
             <MenuIcon sx={{ width: 40, height: 40 }} />
           </IconButton>
-          <Link to={"/"} style={{ color: 'inherit', textDecoration: 'inherit' }}>
+          <Link
+            to={"/"}
+            style={{ color: "inherit", textDecoration: "inherit" }}
+          >
             <Typography
               variant="h5"
               noWrap
               component="div"
-              sx={{ display: { xs: 'none', sm: 'block' } }}
+              sx={{ display: { xs: "none", sm: "block" } }}
             >
               Manager School
             </Typography>
           </Link>
           <Box sx={{ flexGrow: 1 }} />
-          <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-
+          <Box sx={{ display: { xs: "none", md: "flex" } }}>
+            <Link
+              to={"/favorites"}
+              style={{ color: "inherit", textDecoration: "inherit" }}
+            >
+              <IconButton
+                size="large"
+                aria-label="show 2 new notifications"
+                color="inherit"
+              >
+                <Badge badgeContent={2} color="error">
+                  <FolderSpecialIcon sx={{ width: 40, height: 40 }} />
+                </Badge>
+              </IconButton>
+            </Link>
             <IconButton
               size="large"
-              aria-label="show 17 new notifications"
+              aria-label="show 5 new notifications"
               color="inherit"
             >
               <Badge badgeContent={17} color="error">
                 <MonetizationOnIcon sx={{ width: 40, height: 40 }} />
+
               </Badge>
             </IconButton>
             <IconButton
@@ -173,7 +209,7 @@ export default function PrimarySearchAppBar({user}) {
               <AccountCircle sx={{ width: 40, height: 40 }} />
             </IconButton>
           </Box>
-          <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
+          <Box sx={{ display: { xs: "flex", md: "none" } }}>
             <IconButton
               size="large"
               aria-label="show more"
