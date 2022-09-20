@@ -56,3 +56,5 @@ let pago = {
   detail: "",
   students: ["1", "2"],
 };
+
+/// subiendo 
