@@ -1,5 +1,6 @@
 import React from "react";
-import Input from "@mui/material/input";
+import {  Button, TextField } from '@mui/material';
+
 import Button from "@mui/material/button";
 import { FormLabel } from '@mui/material';
 
@@ -29,8 +30,8 @@ function CreateNews(props) {
     <div>
       <FormLabel onSubmit={handleSubmit}>
         <legend>Title</legend>
-        <Input placeholder="Titulo" /> 
-        <Input placeholder="Descripcion" /> 
+        <TextField placeholder="Titulo" /> 
+        <TextField placeholder="Descripcion" /> 
         <Button variant="contained" component="label">
           Cargar imagen
           <input hidden accept="image/*" multiple type="file" />
