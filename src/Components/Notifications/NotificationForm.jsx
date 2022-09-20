@@ -1,39 +1,75 @@
-import { FormControl, Checkbox, Rating, InputLabel, Stack, Box, Grid, Button, Select, MenuItem, FormControlLabel, Card, Typography, CardContent, TextField } from '@mui/material';
-import LoadingButton from '@mui/lab/LoadingButton';
+import { FormControl, Autocomplete, Checkbox, Rating, InputLabel, Stack, Grid, Button, Select, MenuItem, FormControlLabel, Card, Typography, CardContent, TextField } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAllTypeUsers } from '../../redux/actions'
+import { getAllStudents } from '../Students/studentsActions'
 
-export default function UserForm({ notification, mode, handleClose, dataForm, title }) {
+export default function NotificationForm({ notification, mode, handleClose, dataForm, title }) {
 
+    const studentsAllState = useSelector(state => state.students)
+    const studentsAllFormated = studentsAllState?.map(student => {
+        return {
+            idStudent: student.idStudent,
+            firstNames: student.firstNames,
+            lastName: student.lastName,
+            course: student.course.nameCourse
+        }
+    })
+    const [studentsIdNotificationState, setStudentsIdNotificationState] = useState([])
+    let user = useSelector(state => state.user)
+    const dispatch = useDispatch()
 
-    const [loading, setLoading] = useState(false)
+    //Obtencion de Alumnos para llenar combo
+    useEffect(() => {
+        //Si no hay un estudiante 0 en el estado redux trae del back para llenar Autocomplete
+        if (!studentsAllState[0])
+            dispatch(getAllStudents())
+        //si el modo es edit obtiene los estudiantes que recibieron la notificacion
+        if (mode === "edit") {
+            let studentsIdNotification = notification?.students?.map(student => {
+                return {
+                    idStudent: student.idStudent,
+                    firstNames: student.firstNames,
+                    lastName: student.lastName,
+                    course: student.course.nameCourse
+                }
+            })
+            //guardo en estado local los estudiantes que recibieron la notificacion para completar el valueDefault de Autocomplete
+            setStudentsIdNotificationState(studentsIdNotification)
+        }
+    }, [dispatch])
+
     const [formData, setFormData] = useState({
         idNotifications: notification?.idNotifications,
         subject: notification.subject ? notification.subject : '',
         body: notification.body ? notification.body : '',
         active: notification.active ? notification.active : true,
-        check: notification.check ? notification.check : null,
+        check: notification.check ? notification.check : false,
         pay: notification.pay ? notification.pay : false,
-        review: notification.review ? notification.review : null,
+        review: notification.review ? notification.review : false,
+        senderId: user[0].idUser ? user[0].idUser : 1,
+        idStudent: studentsIdNotificationState.idStudent ? studentsIdNotificationState.idStudent : []
     })
     const { subject, body, active, pay, review, check } = formData
 
     function handledOnChange(e) {
         setFormData({ ...formData, [e.target.name]: e.target.value })
     }
-    
+
     function handleChecks(e) {
         setFormData({ ...formData, [e.target.name]: e.target.checked })
     }
-    
+
+    function handleAutoComplete(value) {
+        setStudentsIdNotificationState(value)
+        setFormData({ ...formData, idStudent: value })
+    }
+
     function handledOnClick() {
-        setLoading(true)
-        console.log("Datos de formulario",formData);
-        dataForm(formData)
+        // console.log("Datos de formulario", formData);
+        dataForm(formData, mode)
+        // console.log("valores seleccionados:",studentsIdNotificationState);
         setTimeout(function () {
-            setLoading(false)
             handleClose()
         }, 2000);
     }
@@ -43,7 +79,7 @@ export default function UserForm({ notification, mode, handleClose, dataForm, ti
             <CardContent >
                 <Typography gutterBottom variant="h5" >{title}</Typography>
                 <Grid xs={12} sm={6} item>
-                    <FormControl fullWidth sx={{ m: 1 }}>
+                    <FormControl fullWidth sx={{ mt: 1 }}>
                         <TextField multiline rows={2} name="subject"
                             label="Asunto" type="text" onChange={e => handledOnChange(e)}
                             placeholder="Ingrese nombre" sx={{ mb: 1.5 }} variant="outlined"
@@ -51,7 +87,7 @@ export default function UserForm({ notification, mode, handleClose, dataForm, ti
                     </FormControl>
                 </Grid>
                 <Grid xs={12} sm={6} item>
-                    <FormControl fullWidth sx={{ m: 1 }}>
+                    <FormControl fullWidth sx={{ mt: 1 }}>
                         <TextField multiline rows={4} name="body" type="text" label="Decripción"
                             onChange={e => handledOnChange(e)} sx={{ mb: 1.5 }} placeholder="Ingrese apellido"
                             variant="outlined" aria-describedby="body-Helper" value={body} required />
@@ -59,45 +95,42 @@ export default function UserForm({ notification, mode, handleClose, dataForm, ti
                 </Grid>
                 <Grid xs={12} sm={6} item>
                     <FormControl >
-                        <FormControlLabel control={<Checkbox checked={active} />} name="active" onChange={handleChecks} label="Activo" />
+                        <FormControlLabel control={<Checkbox checked={active} />} name="active" onChange={handleChecks} label="Activa" />
                     </FormControl>
                     <FormControl >
                         <FormControlLabel control={<Checkbox checked={pay} />} name="pay" onChange={handleChecks} label="Pagos" />
                     </FormControl>
-                </Grid>
-                <Grid xs={12} sm={6} item row>
-                    <InputLabel htmlFor="check">Confirmacion</InputLabel>
-                    <FormControl sx={{ m: 1 }}>
-                        <Select name="check" displayEmpty label="Confirma" onChange={e => handledOnChange(e)} value={check}>
-                            <MenuItem key={0} value={null}>Sin Confirmacion</MenuItem>
-                            <MenuItem key={1} value={false}>No Confirmada</MenuItem>
-                            <MenuItem key={2} value={true}>Confirmada</MenuItem>
-                        </Select>
+                    <FormControl >
+                        <FormControlLabel control={<Checkbox checked={check} />} name="check" onChange={handleChecks} label="Confirma" />
                     </FormControl>
-                    <InputLabel htmlFor="review">Valoración</InputLabel>
-                    <FormControl sx={{ m: 1 }}>
-                        {(review === null || review === 0) ?
-                            <Select name="review" displayEmpty label="Valoración" onChange={e => handledOnChange(e)} value={review} >
-                                <MenuItem key={0} value={null}>Sin Valoración</MenuItem>
-                                <MenuItem key={1} value={0}>Valoración</MenuItem>
-                            </Select>
-                            : <Select name="review" displayEmpty label="Valoración" onChange={e => handledOnChange(e)} value={review} disabled>
-                                <MenuItem key={0} value={null}>Sin Valoración</MenuItem>
-                                <MenuItem key={1} value={review}>Valoración</MenuItem>
-                            </Select>
-                        }
+                    <FormControl >
+                        <FormControlLabel control={<Checkbox checked={review} />} name="review" onChange={handleChecks} label="Valora" />
+                    </FormControl>
+                </Grid>
+                <Grid xs={12} sm={6} item>
+                    <InputLabel htmlFor="review" sx={{ mt: 1, mb: 1 }}>Destinatarios</InputLabel>
 
-                    </FormControl>
-                    <FormControl>
-                        <Stack spacing={2}>
-                            <Rating value={review} readOnly />
-                        </Stack>
-                    </FormControl>
+                    <Autocomplete
+                        multiple
+                        xs={12} sm={6}
+                        limitTags={3}
+                        id="multiple-limit-tags"
+                        disableCloseOnSelect = {true}
+                        options={studentsAllFormated}
+                        value={studentsIdNotificationState}
+                        onChange={(e, value) => handleAutoComplete(value)}
+                        isOptionEqualToValue={(option, value) => option.idStudent === value.idStudent}
+                        getOptionLabel={(option) => `${option.firstNames} ${option.lastName} ${option.course}`}
+                        defaultValue={studentsIdNotificationState}
+                        renderInput={(params) => (
+                            <TextField {...params} label="agregar alumno" placeholder="agregar alumno" />
+                        )}
+                    />
                 </Grid>
-                <Grid xs={12} sm={6} item >
-                    <LoadingButton type="submit" onClick={handledOnClick} endIcon={<SendIcon />} loading={loading} loadingPosition="end" variant="contained">
+                <Grid xs={12} sm={6} item sx={{ mt: 1 }}>
+                    <Button type="submit" onClick={handledOnClick} endIcon={<SendIcon />} variant="contained">
                         {mode === "new" ? "Crear" : "Editar"}
-                    </LoadingButton>
+                    </Button>
                     <Button onClick={handleClose}>Cancelar</Button>
                 </Grid>
             </CardContent>

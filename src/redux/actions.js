@@ -3,7 +3,7 @@ export const CLEANER_USER = "CLEANER_USER";
 export const GET_NEWS = "GET_NEWS"
 export const GET_FAVORITES = "GET_FAVORITES"
 export const GET_ALL_TYPEUSERS = "GET_ALL_TYPEUSERS";
-export const GET_ALL_IDUSER_NOTIFICATIONS = "GET_ALL_IDUSER_NOTIFICATIONS";
+
 
 
 // get password
@@ -23,19 +23,6 @@ export function login(input) {
         dispatch({ type: LOGIN, payload: login });
       });
   };
-}
-
-export const getNotifications = (idUser) => async dispatch => {
-  try{
-  return await fetch(`http://localhost:3001/notifications/idUser/${idUser}`)
-    .then(r => r.json())
-    .then(data => dispatch({ type: "GET_ALL_IDUSER_NOTIFICATIONS", payload: data }))
-    .catch(error=> console.log('Error de fetch API'))
-  }
-  catch(error){
-    console.log('Error de try API');
-    throw new Error({error: error.messege}) 
-  }
 }
 
 export const getAllTypeUsers = () => async dispatch => {

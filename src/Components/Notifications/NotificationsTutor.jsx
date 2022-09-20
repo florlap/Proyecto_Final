@@ -1,7 +1,8 @@
 import * as React from 'react';
 import MUIDataTable from "mui-datatables";
 import Button from '@mui/material/Button';
-import { Grid, Box , Stack, Rating} from '@mui/material';
+import { Typography } from '@mui/material';
+import { Grid, Stack, Rating } from '@mui/material';
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import ConfirmIcon from '@mui/icons-material/ThumbUpAlt';
@@ -9,11 +10,21 @@ import NoConfirmIcon from '@mui/icons-material/ThumbUpOffAlt';
 import Pay from '@mui/icons-material/Paid';
 import DialogContainer from '../Layout/DialogContainer'
 import NotificationDetail from './NotificationDetail'
+import {notificationCheck ,getNotificationsIdUser, notificationScore} from './notificationsActions'
 
-export default function NotificationsAdmin() {
+
+export default function NotificationsTutor() {
 
     //traigo las notificaciones que estan en el estado
-    let notificationsState = useSelector(state => state.user)
+    let notificationsState = useSelector(state => state.notificationsIdUser)
+    let user = useSelector(state => state.user)
+    let userId = localStorage.getItem("idUser")
+    const [change, setChange] = useState(false)
+    const dispatch = useDispatch()
+
+    useEffect(() => {
+        dispatch(getNotificationsIdUser(userId))
+    }, [dispatch,change])
 
 
     const [notificationSelected, setnotificationSelected] = useState({})
@@ -29,63 +40,49 @@ export default function NotificationsAdmin() {
         setOpen(false);
     };
 
+    function handleOnCheck(idNotificationStudent) {
+        notificationCheck(idNotificationStudent)
+        setChange(!change)        
+    }
+
     function handleOnclickDetail(notification) {
-        console.log("Notif tomada de tabla", notification);
         setnotificationSelected(notification)
         handleClickOpen()
     }
+
+    function handleOnScore(idNotificationStudent,score) {
+        let data = {
+            idNotificationStudent,
+            score
+        }
+        notificationScore(data)
+        setChange(!change)
+    }
     // console.log(notifications);
     let notificationsRowsFormated = []
-    notificationsState[0]?.students?.map((student, index) => {
+    notificationsState?.students?.map((student, index) => {
         var studentName = student.firstNames
-        let key = 1
         if (student.notifications.length !== 0) {
             student?.notifications?.map((notification) => {
                 let fecha = notification.creationDate.split('-')
                 let fechaFormated = `${fecha[2]}/${fecha[1]}/${fecha[0]}`
                 notificationsRowsFormated.push([fechaFormated, notification.subject, notification.body, studentName,
-                    notification?.check === null ? "" : notification?.check ? <ConfirmIcon color='success' sx={{ width: 30, height: 30 }} /> : <NoConfirmIcon color='disabled' sx={{ width: 30, height: 30 }} />,
+                    notification?.check ? (notification?.notifications_students?.checkState ? <ConfirmIcon color='success' sx={{ width: 30, height: 30 }} /> : <NoConfirmIcon color='disabled' sx={{ width: 30, height: 30 }} />) : "",
                     notification?.pay ? <Pay sx={{ width: 30, height: 30 }} /> : "",
-                    <div> {notification?.review ? <Stack spacing={2}> <Rating value={notification?.review} readOnly /></Stack> : ''}</div> ,
-                    <div key={key}><Button variant="outlined" onClick={() => handleOnclickDetail(notification)} >Detalles</Button></div>])
-                key++
+                    <div> {notification?.review ? <Stack spacing={2}> <Rating value={notification?.notifications_students?.score} readOnly /></Stack> : ''}</div>,
+                    <div key={notification?.idNotifications}><Button variant="outlined" onClick={() => handleOnclickDetail(notification)} >Detalles</Button></div>])
+                return ""
             })
         }
+    return ""
     })
-    useEffect(()=>{
 
+
+
+    useEffect(() => {
         setNotificationsRows(notificationsRowsFormated)
-    }, [notificationsRowsFormated])
-    function dataForm(data) {
-        let dataTableEdit={
-            subject: data?.subject,
-            body: data?.body,
-            active: data.active,
-            check: data?.check,
-            pay: data?.pay,
-            review: data?.review,
-            }
-            console.log("Datos que llegan de detail:",dataTableEdit);
-            notificationsRowsFormated.push(dataTableEdit)
-            setNotificationsRows(notificationsRowsFormated)
-            console.log("Lista de notif despues de agregar en formateada",notificationsRowsFormated);
-            console.log("Lista de notif despues de agregar en tabla",notificationsRows);
-            // let dataDbNew= {
-            //     firstNames: data.firstNames,
-            //     lastName: "apellido",
-            //     email: data.email,
-            //     phone: 123456,
-            //     password: "",
-            //     typeuserIdTypeUsers: data.idTypeUsers,
-            // }
-            // let dataFormated= {
-            //     type: "POST_ADMINISTRATIVO",
-            //     users: [dataDbNew]
-            // }
-            // userCreate(dataFormated)
-            // console.log("Este se envio desde Form:",dataFormated);
- 
-    }
+    }, [notificationsState])
+    
 
     let columns = [
         {
@@ -143,9 +140,9 @@ export default function NotificationsAdmin() {
         tableBodyHeight: '100%',
         tableBodyMaxHeight: '100%',
         searchPlaceholder: "asunto / descripcion",
-        searchAlwaysOpen: "true",
+        searchAlwaysOpen: true,
         selectableRows: "none",
-        responsive: "stacked",
+        responsive: "vertical",
         hideSelectColumn: true,
 
         textLabels: {
@@ -187,7 +184,8 @@ export default function NotificationsAdmin() {
     return (
         <div>
             <div>
-                <h2>Notificaciones</h2>
+            <Typography align={"center"} sx={{ mt:2}} gutterBottom variant="h4" >Notificaciones</Typography>
+
                 <div>
                     <MUIDataTable
                         title={"Listado de Notificaciones"}
@@ -199,7 +197,7 @@ export default function NotificationsAdmin() {
 
             </div>
             <Grid Container>
-                <DialogContainer open={open}  ><NotificationDetail notification={notificationSelected} handleClose={handleClose} dataForm={dataForm} /></DialogContainer>
+                <DialogContainer open={open}  ><NotificationDetail notification={notificationSelected} handleClose={handleClose} handleOnCheck={handleOnCheck} handleOnScore={handleOnScore} /></DialogContainer>
             </Grid>
         </div>
     )

@@ -12,7 +12,7 @@ export default function FormDialog({open,children}) {
 
    return (
     <div>
-<Dialog open={open} fullWidth  maxWidth="xs">
+<Dialog open={open} fullWidth  maxWidth="sm" >
         <DialogContent>
           {/* <DialogContentText>
             Subtitulo

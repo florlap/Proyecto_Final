@@ -1,6 +1,6 @@
 import React from 'react';
 import Carousel from 'react-material-ui-carousel'
-import Item from './Item';
+import Item from '../News/Item';
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getFavorites } from "../../redux/actions";

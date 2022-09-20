@@ -1,12 +1,5 @@
 import * as React from 'react';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import Badge from '@mui/material/Badge';
-import MenuItem from '@mui/material/MenuItem';
-import Menu from '@mui/material/Menu';
+import { AppBar, Box, Toolbar, IconButton, Badge, MenuItem, Typography, Menu, Avatar } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import LocalGroceryStore from '@mui/icons-material/LocalGroceryStore';
@@ -18,12 +11,17 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import FolderSpecialIcon from "@mui/icons-material/FolderSpecial";
 
-export default function PrimarySearchAppBar({user}) {
+export default function PrimarySearchAppBar({ mobileOpen, handleDrawerToggle }) {
   let dispatch = useDispatch();
   let navigate = useNavigate();
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+
+  const typeUser = localStorage.getItem("typeUser")
+  const userNames = localStorage.getItem("userNames")
+  console.log("User en navbar", userNames);
+
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -48,9 +46,12 @@ export default function PrimarySearchAppBar({user}) {
 
   function handledCloseSession() {
     dispatch(cleanerUser());
-    navigate("/");
     setAnchorEl(null);
     handleMobileMenuClose();
+    localStorage.removeItem("idUser")
+    localStorage.removeItem("typeUser")
+    localStorage.removeItem("userNames")
+    navigate("/");
   }
 
   function handledProfile() {
@@ -63,21 +64,48 @@ export default function PrimarySearchAppBar({user}) {
   const renderMenu = (
     <Menu
       anchorEl={anchorEl}
-      anchorOrigin={{
-        vertical: "top",
-        horizontal: "right",
+      PaperProps={{
+        elevation: 0,
+        sx: {
+          overflow: 'visible',
+          filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+          mt: 0,
+          '& .MuiAvatar-root': {
+            width: 32,
+            height: 32,
+            ml: -0.5,
+            mr: 1,
+          },
+          '&:before': {
+            content: '""',
+            display: 'block',
+            position: 'absolute',
+            top: 0,
+            right: 27,
+            width: 10,
+            height: 10,
+            bgcolor: 'background.paper',
+            transform: 'translateY(-50%) rotate(45deg)',
+            zIndex: 0,
+          },
+        },
       }}
+      transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+      anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       id={menuId}
       keepMounted
-      transformOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handledProfile}>Perfil {user?.firstNames} {user?.lastName}</MenuItem>
-      <MenuItem onClick={handledCloseSession}>Cerrar Sesion</MenuItem>
+
+      {typeUser
+        ? <MenuItem onClick={handledProfile}>Perfil {userNames}</MenuItem>
+        : <MenuItem onClick={() => (navigate("/login"))}>Iniciar Sesión</MenuItem>
+      }
+      {typeUser
+        ? <MenuItem onClick={handledCloseSession}>Cerrar Sesion</MenuItem>
+        : ""}
+
     </Menu>
   );
 
@@ -85,46 +113,42 @@ export default function PrimarySearchAppBar({user}) {
   const renderMobileMenu = (
     <Menu
       anchorEl={mobileMoreAnchorEl}
-      anchorOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
+      anchorOrigin={{ vertical: "top", horizontal: "right", }}
       id={mobileMenuId}
       keepMounted
-      transformOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
+      transformOrigin={{ vertical: "top", horizontal: "right", }}
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      <Link
-        to={"/favorites"}
-        style={{ color: "inherit", textDecoration: "inherit" }}
-      >
-        <MenuItem>
+
+      <MenuItem onClick={() => navigate("/")}>
+        {typeUser !== "Administrativo"
+          ?
           <IconButton
             size="large"
-            aria-label="show 2 new notifications"
+            aria-label="show 2 new favoritos"
             color="inherit"
+            onClick={() => navigate("/favsLanding")}
           >
             <Badge badgeContent={2} color="error">
               <FolderSpecialIcon />
             </Badge>
           </IconButton>
-          <p>Favoritos</p>
-        </MenuItem>
-      </Link>
+          : ""}
+        <p>Favoritos</p>
+      </MenuItem>
       <MenuItem>
-        <IconButton
-          size="large"
-          aria-label="show 17 new notifications"
-          color="inherit"
-        >
-          <Badge badgeContent={17} color="error">
-            <MonetizationOnIcon />
-          </Badge>
-        </IconButton>
+        {typeUser === "Tutor"
+          ? <IconButton
+            size="large"
+            aria-label="show 17 new notifications"
+            color="inherit"
+          >
+            <Badge badgeContent={17} color="error">
+              <MonetizationOnIcon />
+            </Badge>
+          </IconButton>
+          : ""}
         <p>Carrito</p>
       </MenuItem>
       <MenuItem onClick={handleProfileMenuOpen}>
@@ -154,35 +178,61 @@ export default function PrimarySearchAppBar({user}) {
             edge="start"
             color="inherit"
             aria-label="open drawer"
-            sx={{ mr: 2 }}
+            sx={{ mr: 2, display: { sm: 'none' } }}
+            onClick={handleDrawerToggle}
           >
-            <MenuIcon sx={{ width: 40, height: 40 }} />
+            <MenuIcon sx={{ width: 35, height: 35 }} />
           </IconButton>
-          <Link
-            to={"/"}
-            style={{ color: "inherit", textDecoration: "inherit" }}
+          <Avatar
+            alt="Remy Sharp"
+            src="/logo-school-vector.jpg"
+            sx={{ width: 50, height: 50, mr: 1 }}
+          />
+          <Typography
+            variant="h5"
+            noWrap
+            component="div"
+            sx={{ display: { xs: "none", sm: "block" } }}
+            onClick={() => navigate("/")}
           >
-            <Typography
-              variant="h5"
-              noWrap
-              component="div"
-              sx={{ display: { xs: "none", sm: "block" } }}
-            >
-              Manager School
-            </Typography>
-          </Link>
+            Gestión Educativa
+          </Typography>
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-
-            <IconButton
-              size="large"
-              aria-label="show 17 new notifications"
-              color="inherit"
+            {userNames?
+            <Typography
+              variant="h6"
+              noWrap
+              component="div"
+              sx={{ display: { xs: "none", sm: "block" } ,mt:2}}
             >
-              <Badge badgeContent={17} color="error">
-                <MonetizationOnIcon sx={{ width: 40, height: 40 }} />
-              </Badge>
-            </IconButton>
+              Bienvenido {userNames}
+            </Typography>
+            :""}
+            {typeUser !== "Administrativo"
+              ?
+              <IconButton
+                size="large"
+                aria-label="show 2 new favoritos"
+                color="inherit"
+                onClick={() => navigate("/favsLanding")}
+              >
+                <Badge badgeContent={2} color="error">
+                  <FolderSpecialIcon sx={{ width: 40, height: 40 }} />
+                </Badge>
+              </IconButton>
+              : ""}
+            {typeUser === "Tutor"
+              ? <IconButton
+                size="large"
+                aria-label="show 17 new notifications"
+                color="inherit"
+              >
+                <Badge badgeContent={17} color="error">
+                  <MonetizationOnIcon sx={{ width: 40, height: 40 }} />
+                </Badge>
+              </IconButton>
+              : ""}
             <IconButton
               size="large"
               edge="end"
