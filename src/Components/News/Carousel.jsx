@@ -11,7 +11,7 @@ const NewsCarusel = ({news}) => {
 
 
   return (
-    <Carousel sx={{ m: 3 }}>
+    <Carousel  sx={{ m: 3 , maxHeight:"300px"}}>
                 {
                     news.map( (newItem) => <Item key={newItem.idNews} news={newItem} /> )
                 }

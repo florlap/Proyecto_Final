@@ -53,12 +53,14 @@ const Item = ({news}) => {
     }
 
     return (
-        <Grid container style={{ maxWidth: 1410, margin: "auto" }}>
+        <Grid container style={{ maxWidth: 1200, margin: "auto" }}>
             <Grid item md={8} sm={12} sx={{ boxShadow: 2 }}>
                 <CardMedia
                     component="img"
                     image={news.image}  // img
                     alt="Paella dish"
+                    max-width= "100%"
+                    height= "auto"
                 />
             </Grid>
             <Grid item md={4} sm={12}>
