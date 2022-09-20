@@ -1,16 +1,17 @@
-import * as React from "react";
-import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
-import Badge from "@mui/material/Badge";
-import MenuItem from "@mui/material/MenuItem";
-import Menu from "@mui/material/Menu";
-import MenuIcon from "@mui/icons-material/Menu";
-import AccountCircle from "@mui/icons-material/AccountCircle";
-import LocalGroceryStore from "@mui/icons-material/LocalGroceryStore";
-import MoreIcon from "@mui/icons-material/MoreVert";
+import * as React from 'react';
+import AppBar from '@mui/material/AppBar';
+import Box from '@mui/material/Box';
+import Toolbar from '@mui/material/Toolbar';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
+import Badge from '@mui/material/Badge';
+import MenuItem from '@mui/material/MenuItem';
+import Menu from '@mui/material/Menu';
+import MenuIcon from '@mui/icons-material/Menu';
+import AccountCircle from '@mui/icons-material/AccountCircle';
+import LocalGroceryStore from '@mui/icons-material/LocalGroceryStore';
+import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
+import MoreIcon from '@mui/icons-material/MoreVert';
 import { Link } from "react-router-dom";
 import { cleanerUser } from "../../redux/actions";
 import { useDispatch } from "react-redux";
@@ -121,7 +122,7 @@ export default function PrimarySearchAppBar({user}) {
           color="inherit"
         >
           <Badge badgeContent={17} color="error">
-            <LocalGroceryStore />
+            <MonetizationOnIcon />
           </Badge>
         </IconButton>
         <p>Carrito</p>
@@ -191,8 +192,9 @@ export default function PrimarySearchAppBar({user}) {
               aria-label="show 5 new notifications"
               color="inherit"
             >
-              <Badge badgeContent={5} color="error">
-                <LocalGroceryStore sx={{ width: 40, height: 40 }} />
+              <Badge badgeContent={17} color="error">
+                <MonetizationOnIcon sx={{ width: 40, height: 40 }} />
+
               </Badge>
             </IconButton>
             <IconButton
