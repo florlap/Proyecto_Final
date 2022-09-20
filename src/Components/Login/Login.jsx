@@ -66,10 +66,16 @@ export default function Login(props) {
     if (user[0].initialState === true) {
       navigate("/change");
     } else if (user[0].initialState === false) {
-      navigate("/noticias");
+      navigate("/");
+      localStorage.setItem("idUser",user[0]?.idUser?user[0]?.idUser:0)
+      localStorage.setItem("typeUser",user[0]?user[0]?.typeuser.typeUsers:0)
+      localStorage.setItem("userNames",user[0]?`${user[0]?.firstNames} ${user[0]?.lastName}`:0)
     }
   } else if (user[1] === "GOOGLE") {
-    navigate("/noticias");
+    navigate("/");
+    localStorage.setItem("idUser",user[0]?.idUser?user[0]?.idUser:0)
+    localStorage.setItem("typeUser",user[0]?user[0]?.typeuser.typeUsers:0)
+    localStorage.setItem("userNames",user[0]?`${user[0]?.firstNames} ${user[0]?.lastName}`:0)
   }
   
   }, [user]);

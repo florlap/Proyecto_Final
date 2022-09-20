@@ -1,48 +1,33 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
-import Divider from "@mui/material/Divider";
-import Drawer from "@mui/material/Drawer";
+import { Drawer, List, ListItem, ListItemButton, ListItemIcon, Divider, ListItemText, Typography, Toolbar } from '@mui/material';
 import Paid from "@mui/icons-material/Paid";
 import PeopleAlt from "@mui/icons-material/PeopleAlt";
 import School from "@mui/icons-material/School";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import MailIcon from "@mui/icons-material/Mail";
-import Toolbar from "@mui/material/Toolbar";
-import { Link } from "react-router-dom";
 import NewspaperIcon from "@mui/icons-material/Newspaper";
+import MailIcon from "@mui/icons-material/Mail";
+import { Link } from "react-router-dom";
 const drawerWidth = 240;
 
-export default function ResponsiveDrawer({typeUser}) {
+export default function ResponsiveDrawer({ mobileOpen, handleDrawerToggle }) {
 
   const { window } = () => Window;
-  const [mobileOpen, setMobileOpen] = React.useState(false);
-
-
-  const handleDrawerToggle = () => {
-    setMobileOpen(!mobileOpen);
-  };
-
-
-// let typeUser = typeUsers ? typeUsers: "administrativo"
+  const typeUser = localStorage.getItem("typeUser")
 
   let menuLinks = [];
 
   switch (typeUser) {
     case "Administrativo":
       menuLinks = [
-        { link: "/", text: "Usuarios", icon: <PeopleAlt /> },
+        { link: "/users", text: "Usuarios", icon: <PeopleAlt /> },
         { link: "/noticias", text: "Noticias", icon: <NewspaperIcon /> },
         {
           link: "/notifications/admin",
           text: "Notificaciones",
           icon: <MailIcon />,
         },
-        { link: "/", text: "Alumnos", icon: <School /> },
+        { link: "/students", text: "Alumnos", icon: <School /> },
         { link: "/", text: "Pagos", icon: <Paid /> },
       ];
       break;
@@ -59,9 +44,10 @@ export default function ResponsiveDrawer({typeUser}) {
     <div>
 
       <Toolbar>
-        {typeUser === "admin" ? "Administracion" : "Accesos"}
       </Toolbar>
       <CssBaseline />
+      <Divider />
+      <Typography gutterBottom variant="h5" sx={{ m: 1 }}>{typeUser === "Administrativo" ? "Administracion" : "Accesos"}</Typography>
       <Divider />
       <List>
         {menuLinks.map((item, index) => (

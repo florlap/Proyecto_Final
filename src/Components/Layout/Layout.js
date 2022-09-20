@@ -12,10 +12,15 @@ const drawerWidth = 240; {/* Medida del ancho de la Sidebar */}
 
 function Layout({ children }) {
 
-    const user = useSelector(state => state.user)
-    const typeUser = user[0]?.typeuser?.typeUsers
-    console.log("usuario obtenido",user,"Tipo usuario",typeUser);
-  
+    const idUser = localStorage.getItem("idUser")
+    const typeUser = localStorage.getItem("typeUser")
+    console.log("usuario obtenido",idUser,"Tipo usuario",typeUser);
+    //Para manejo de responsive de la Sidebar
+    const [mobileOpen, setMobileOpen] = React.useState(false);
+    const handleDrawerToggle = () => {
+      setMobileOpen(!mobileOpen);
+    }; 
+
     return (
         <div>
             <head>
@@ -24,9 +29,9 @@ function Layout({ children }) {
                 <link rel="icon" href="/favicon.ico" />
             </head>
             <Box sx={{ display: 'flex' }}>{/* Coloca sidebar y children uno al lado del otro */}
-                {user.length>0 ? <Sidebar typeUser={typeUser} /> : ""}
+                {idUser!==null ? <Sidebar typeUser={typeUser} mobileOpen={mobileOpen} handleDrawerToggle={handleDrawerToggle} /> : "" }
                 <Box component="main" sx={{ flexGrow: 1, width: { sm: `calc(100% - ${drawerWidth}px)` } }}>{/* calcula el espacio que tiene que defasar el componente principal para que no quede debajo de la sidebar */}
-                    <Navbar user={user[0]} />{/* Configurada para estar sobre los elementos */}
+                    <Navbar mobileOpen={mobileOpen} handleDrawerToggle={handleDrawerToggle} />{/* Configurada para estar sobre los elementos */}
                     <Toolbar /> {/* genera un espacio en blanco para que no quede debajo de la Navbar */}
                     {children}{/* componente recibido por props para ser mostrado en cuadrante vacio */}
                 </Box>

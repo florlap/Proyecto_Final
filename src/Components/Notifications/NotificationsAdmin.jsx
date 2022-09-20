@@ -1,55 +1,54 @@
 import * as React from 'react';
 import MUIDataTable from "mui-datatables";
-import Button from '@mui/material/Button';
-import { Grid ,Box} from '@mui/material';
+import { FormControl, Checkbox, Rating, Stack, Box, Grid, Button, FormControlLabel, Typography } from '@mui/material';
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import ConfirmIcon from '@mui/icons-material/ThumbUpAlt';
-import NoConfirmIcon from '@mui/icons-material/ThumbUpOffAlt';
 import Pay from '@mui/icons-material/Paid';
 import DialogContainer from '../Layout/DialogContainer'
 import NotificationForm from './NotificationForm'
+import { getNotificationsAll, notificationCreate, notificationEdit, notificationActDes } from './notificationsActions'
 
 export default function NotificationsAdmin() {
 
+    const dispatch = useDispatch()
     //traigo las notificaciones que estan en el estado
-    let notificationsState = useSelector(state => state.user)
+    let notificationsState = useSelector(state => state.notificationsAll)
 
- 
+    const [change, setChange] = useState(false)
+
+    useEffect(() => {
+        dispatch(getNotificationsAll())
+    }, [dispatch, change])
+
+
     const [notificationSelected, setnotificationSelected] = useState({})
     const [mode, setMode] = useState("new")
-    const [title, setTitle] = useState("Crear de Notificación")
+    const [title, setTitle] = useState("Crear Notificación")
     const [open, setOpen] = useState(false);
-    const [notificationsRows,setNotificationsRows] = useState([])
+    const [notificationsRows, setNotificationsRows] = useState([])
 
-    function dataForm(data) {
-        let dataTableNew={
+    function dataForm(data, mode) {
+        let dataFormated = {
+            idNotifications: data?.idNotifications,
             subject: data?.subject,
             body: data?.body,
             active: data.active,
             check: data?.check,
             pay: data?.pay,
             review: data?.review,
-            }
-            notificationsRowsFormated.push(dataTableNew)
-            console.log("Lista de notif despues de agregar",notificationsRowsFormated);
-        if(mode==="new"){
-            // let dataDbNew= {
-            //     firstNames: data.firstNames,
-            //     lastName: "apellido",
-            //     email: data.email,
-            //     phone: 123456,
-            //     password: "",
-            //     typeuserIdTypeUsers: data.idTypeUsers,
-            // }
-            // let dataFormated= {
-            //     type: "POST_ADMINISTRATIVO",
-            //     users: [dataDbNew]
-            // }
-            // userCreate(dataFormated)
-            // console.log("Este se envio desde Form:",dataFormated);
+            senderId: data?.senderId,
+            studentId: data?.idStudent?.map(student => student.idStudent)
         }
- 
+        if (mode === "new") {
+            notificationCreate(dataFormated)
+            console.log("Data enviada a back", dataFormated);
+        }
+        else {
+            notificationEdit(dataFormated)
+        }
+        setChange(!change)
+
     }
 
     function handleClickOpen() {
@@ -61,37 +60,41 @@ export default function NotificationsAdmin() {
     };
 
     function handleOnclickNewEdit(notification, mode, title) {
-        console.log("Notif tomada de tabla",notification);
         setnotificationSelected(notification)
         setMode(mode)
         setTitle(title)
         handleClickOpen()
     }
+
+    function handleOnClickActDes(idNotifications, active) {
+        notificationActDes({ idNotifications, active })
+        setChange(!change)
+
+    }
     // console.log(notifications);
-    let notificationsRowsFormated = []
-    notificationsState[0]?.students?.map((student , index) => {
-        var studentName =student.firstNames
-        let key =1
-            if(student.notifications.length !== 0)
-            {
-                student?.notifications?.map((notification) =>{
-                        let fecha=notification.creationDate.split('-')
-                        let fechaFormated = `${fecha[2]}/${fecha[1]}/${fecha[0]}`
-                        notificationsRowsFormated.push([fechaFormated, notification.subject, notification.body, studentName, 
-                            notification?.check===null  ? "" : notification?.check?<ConfirmIcon color='success' sx={{ width: 30, height: 30 }}/>:<NoConfirmIcon color='disabled' sx={{ width: 30, height: 30 }}/>,
-                            notification?.pay ? <Pay sx={{ width: 30, height: 30 }}/>:"",
-                        <div key={key}>
-                            <Button variant="outlined" onClick={() => handleOnclickNewEdit(notification, "edit","Editar Notificación")} >Editar</Button>
-                        </div>])
-                        key++
-                })
-            }
+    let notificationsRowsFormated = notificationsState?.map((notification) => {
+
+        let fecha = notification.creationDate.split('-')
+        let fechaFormated = `${fecha[2]}/${fecha[1]}/${fecha[0]}`
+        return ([fechaFormated, notification?.subject, notification?.body, `${notification.sender?.firstNames} ${notification.sender?.lastName}`,
+            <FormControl >
+                <FormControlLabel control={<Checkbox checked={notification?.active} />} name="active" />
+            </FormControl>,
+            notification?.check ? <ConfirmIcon color='disabled' sx={{ width: 30, height: 30 }} /> : "",
+            notification?.pay ? <Pay sx={{ width: 30, height: 30 }} /> : "",
+            notification?.review ? <Stack spacing={2}><Rating value={1} readOnly /></Stack> : "",
+            <div key={notification?.idNotifications}>
+                <Button variant="outlined" onClick={() => handleOnclickNewEdit(notification, "edit", "Editar Notificación")} >Editar</Button>
+                <Button variant="outlined" onClick={() => handleOnClickActDes(notification?.idNotifications, !notification?.active)} >Act/Des</Button>
+            </div>]
+        )
+
     })
-    
-    useEffect(()=>{
+
+    useEffect(() => {
         setNotificationsRows(notificationsRowsFormated)
-    },[notificationsRowsFormated])
-    
+    }, [notificationsState])
+
     let columns = [
         {
             name: "notificationDate",
@@ -102,26 +105,36 @@ export default function NotificationsAdmin() {
             name: "subject",
             label: "Asunto",
             options: { filter: true, sort: true }
-        }, 
+        },
         {
             name: "body",
             label: "Descripcion",
             options: { filter: false, sort: false }
         },
         {
-            name: "student",
-            label: "Alumno",
+            name: "senderId",
+            label: "Envía",
             options: { filter: true, sort: true }
         },
         {
+            name: "active",
+            label: "Activa",
+            options: { filter: true, sort: true, searchable: false }
+        },
+        {
             name: "check",
-            label: "Estado",
-            options: { filter: true, sort: false }
+            label: "Confirma",
+            options: { filter: true, sort: false, searchable: false }
         },
         {
             name: "pay",
-            label: "Pago",
-            options: { filter: true, sort: false }
+            label: "Pagos",
+            options: { filter: true, sort: false, searchable: false }
+        },
+        {
+            name: "review",
+            label: "Valoración",
+            options: { filter: true, sort: false, searchable: false }
         },
         {
             name: "acciones",
@@ -142,28 +155,28 @@ export default function NotificationsAdmin() {
         rowsPerPageOptions: [10, 15, 30, 100],
         tableBodyHeight: '100%',
         tableBodyMaxHeight: '100%',
-        searchPlaceholder: "asunto / descripcion",
-        searchAlwaysOpen: "true",
+        searchPlaceholder: "asunto / descripcion / fecha / envia",
+        searchAlwaysOpen: true,
         selectableRows: "none",
-        responsive: "stacked",
+        responsive: "vertical",
         hideSelectColumn: true,
 
         textLabels: {
             body: {
-                noMatch: "Disculpa, no se encontraron registros",
+                noMatch: "No se encontraron registros",
                 toolTip: "Ordenar",
                 columnHeaderTooltip: column => `Ordenar por ${column.label}`
             },
             pagination: {
                 next: "Siguiente",
                 previous: "Anterior",
-                rowsPerPage: "Filas por Pagina:",
+                rowsPerPage: "Filas por Página:",
                 displayRows: "of",
             },
             toolbar: {
                 search: "Buscar",
-                downloadCsv: "Download CSV",
-                print: "Print",
+                downloadCsv: "Descarga CSV",
+                print: "Imprime",
                 viewColumns: "View Columns",
                 filterTable: "Filtrar Tabla",
             },
@@ -187,22 +200,23 @@ export default function NotificationsAdmin() {
     return (
         <div>
             <div>
-                <h2>Notificaciones</h2>
+                <Typography align={"center"} sx={{ mt: 2 }} gutterBottom variant="h4" >Administración de Notificaciones</Typography>
                 <Box >
-                    <Button variant="outlined" onClick={() => handleOnclickNewEdit({}, "new","Crear Notificación")}>Crear notification</Button>
+                    <Button variant="outlined" onClick={() => handleOnclickNewEdit({}, "new", "Crear Notificación")}>Crear notificación</Button>
                 </Box>
-                <div>
+                <Box sx={{ m: 2 }}>
                     <MUIDataTable
                         title={"Listado de Notificaciones"}
                         data={notificationsRows}
                         columns={columns}
                         options={options}
+
                     />
-                </div>
+                </Box>
 
             </div>
-            <Grid Container>
-                <DialogContainer open={open}  ><NotificationForm notification={notificationSelected} mode={mode} handleClose={handleClose} title={title} dataForm={dataForm}/></DialogContainer>
+            <Grid Container >
+                <DialogContainer open={open}  ><NotificationForm notification={notificationSelected} mode={mode} handleClose={handleClose} title={title} dataForm={dataForm} /></DialogContainer>
             </Grid>
         </div>
     )

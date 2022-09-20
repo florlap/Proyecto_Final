@@ -7,19 +7,13 @@ import { getNews } from "../../redux/actions";
 
 //a
 
-const NewsCarusel = (props) => {
-  let dispatch = useDispatch();
+const NewsCarusel = ({news}) => {
 
-  const news = useSelector((state) => state.news);
-
-  useEffect(() => {
-    dispatch(getNews());
-  }, [dispatch]);
 
   return (
-    <Carousel sx={{ m: 3 }}>
+    <Carousel  sx={{ m: 3 , maxHeight:"300px"}}>
                 {
-                    news.map( (news, i) => <Item key={i} news={news} /> )
+                    news.map( (newItem) => <Item key={newItem.idNews} news={newItem} /> )
                 }
     </Carousel>
   );
