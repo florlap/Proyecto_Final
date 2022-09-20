@@ -1,9 +1,14 @@
-// import axios from "axios"
-
 export const LOGIN = "LOGIN";
+export const CLEANER_USER = "CLEANER_USER";
+export const GET_NEWS = "GET_NEWS"
+export const GET_FAVORITES = "GET_FAVORITES"
+export const GET_ALL_TYPEUSERS = "GET_ALL_TYPEUSERS";
 
 
+
+// get password
 export function login(input) {
+  console.log(input);
   return function (dispatch) {
     return fetch("http://localhost:3001/users/password", {
       method: "POST",
@@ -15,25 +20,66 @@ export function login(input) {
       .then((res) => res.json())
       .catch((error) => console.error("Error:", error))
       .then((login) => {
-        console.log(login);
         dispatch({ type: LOGIN, payload: login });
       });
   };
 }
 
+export const getAllTypeUsers = () => async dispatch => {
+  try{
+  return await fetch(`http://localhost:3001/typeusers`)
+    .then(r => r.json())
+    .then(data => dispatch({ type: "GET_ALL_TYPEUSERS", payload: data }))
+    .catch(error=> console.log('Error de fetch API'))
+  }
+  catch(error){
+    console.log('Error de try API');
+    throw new Error({error: error.messege}) 
+  }
+}
 
-export function resetPassword(email){
-  console.log(email);
-    return fetch("http://localhost:3001/users/passwords",{
-      method: "POST",
-      body: JSON.stringify(email),
+// Restablecer contraseña OK
+export async function resetPassword(password){
+    return fetch("http://localhost:3001/users/password",{
+      method: "PUT",
+      body: JSON.stringify(password),
       headers: {
         "Content-Type": "application/json",
       },
     })
     .then((res) => res.json())
     .catch((error) => console.error("Error:", error))
-    .then((email) => {return email}      
-    );
+    .then((email) => console.log(email));
   }
 
+  // Limpiar reducer user
+  export function cleanerUser(){
+    return {
+      type: CLEANER_USER
+    }
+  }
+
+  export const getNews = ()=>{
+    return function(dispatch){
+      return fetch("http://localhost:3001/news")
+      .then((res) => res.json())
+      .then((data) => {
+        dispatch({
+          type: GET_NEWS, 
+          payload: data });
+      })
+      .catch((error) => console.error("Error:", error))
+    }
+  }
+  export const getFavorites = ()=>{
+    return function(dispatch){
+      return fetch("http://localhost:3001/favnews")
+      .then((res) => res.json())
+      .then((data) => {
+        dispatch({
+          type: GET_FAVORITES, 
+          payload: data });
+      })
+      .catch((error) => console.error("Error:", error))
+    }
+  }
